@@ -1,0 +1,23 @@
+# Quartus generated output and databases
+**/db/
+**/incremental_db/
+**/output_files/
+**/simulation/modelsim/rtl_work/
+*.qws
+*.rpt
+*.summary
+*.smsg
+*.sof
+*.jdi
+*.cdf
+*.pin
+*.sld
+*.done
+*.wlf
+*.vho
+
+# Local editor and backup files
+*.bak
+*.bak[0-9]*
+*~
+.DS_Store
