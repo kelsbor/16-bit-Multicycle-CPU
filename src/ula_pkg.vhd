@@ -71,4 +71,27 @@ package ula_pkg is
 		 
 		);
 	end component;
+
+  component cpu_pkg is
+    port(
+      constant WORD_WIDTH : natural := 16;
+      constant OPCODE_WIDTH : natural := 4;
+
+      constant OP_ADD : std_logic_vector(3 downto 0) := "0000";
+      constant OP_SUB : std_logic_vector(3 downto 0) := "0001";
+      constant OP_AND : std_logic_vector(3 downto 0) := "0010";
+      constant OP_OR : std_logic_vector(3 downto 0) := "0011";
+      constant OP_SLT : std_logic_vector(3 downto 0) := "0100";
+      constant OP_ADDI : std_logic_vector(3 downto 0) := "0101";
+      constant OP_LD : std_logic_vector(3 downto 0) := "0110";
+      constant OP_ST : std_logic_vector(3 downto 0) := "0111";
+      constant OP_BEQ : std_logic_vector(3 downto 0) := "1000";
+      constant OP_JMP : std_logic_vector(3 downto 0) := "1001";
+
+      
+      constant ALU_OP_ADD : std_logic_vector(1 downto 0) := "00";
+      constant ALU_OP_SUB : std_logic_vector(1 downto 0) := "01";
+      constant ALU_OP_R : std_logic_vector(1 downto 0) := "10";
+    );
+  end component;
 end package ula_pkg;
