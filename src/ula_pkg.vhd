@@ -26,8 +26,6 @@ package ula_pkg is
 
 	component ula is
 		port(
-			ULACtl	: in std_logic_vector(2 downto 0);
-			
 			R			: out std_logic_vector(15 downto 0);
 			Zero		: out std_logic;
 			Overflow	: out std_logic;	-- nao mais utilizado
@@ -48,7 +46,20 @@ package ula_pkg is
 			B_Rj_data: in std_logic_vector(15 downto 0);
 			B_4		: in std_logic_vector(15 downto 0);
 			B_Ime		: in std_logic_vector(15 downto 0);
-			B_End		: in std_logic_vector(15 downto 0)
+			B_End		: in std_logic_vector(15 downto 0);
+			
+			-- 000 | AndOp
+			-- 001 | OrOp
+			-- 010 | AddOp
+			-- 100 | SubOp
+			-- 110 | SltOp
+			-- 111 | NotOp
+			Funct		: in std_logic_vector(2 downto 0);
+			
+			-- 00 | AddOp
+			-- 01 | SubOp
+			-- 10 | Funct do tipo R repassado para a ULA
+			AluOp		: in std_logic_vector(1 downto 0)-
 		);
 	end component;
 	

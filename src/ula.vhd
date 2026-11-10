@@ -5,8 +5,6 @@ use work.ula_pkg.all;
 
 entity ula is
 	port(
-			ULACtl	: in std_logic_vector(2 downto 0);
-			
 			R			: out std_logic_vector(15 downto 0);
 			Zero		: out std_logic;
 			Overflow	: out std_logic;	-- nao mais utilizado
@@ -27,11 +25,27 @@ entity ula is
 			B_Rj_data: in std_logic_vector(15 downto 0);
 			B_4		: in std_logic_vector(15 downto 0);
 			B_Ime		: in std_logic_vector(15 downto 0);
-			B_End		: in std_logic_vector(15 downto 0)
+			B_End		: in std_logic_vector(15 downto 0);
+			
+			-- 000 | AndOp
+			-- 001 | OrOp
+			-- 010 | AddOp
+			-- 100 | SubOp
+			-- 110 | SltOp
+			-- 111 | NotOp
+			Funct		: in std_logic_vector(2 downto 0);
+			
+			-- 00 | AddOp
+			-- 01 | SubOp
+			-- 10 | Funct do tipo R repassado para a ULA
+			AluOp		: in std_logic_vector(1 downto 0)
 	);
 end ula;
 
 architecture logic of ula is
+	-- controle interno de operaçao
+	signal ULACtl		: std_logic_vector(2 downto 0);
+
 	-- auxiliares
 	signal A				: std_logic_vector(15 downto 0);
 	signal B				: std_logic_vector(15 downto 0);
@@ -69,6 +83,13 @@ architecture logic of ula is
 					B_Ime when "10",
 					B_End when "11",
 					(others => '0') when others;
+					
+		-- Operaçao com base em Function ou ALUOp
+		with AluOp select
+			ULACtl	<= "010" when "00",		-- addop
+							"100" when "01",		-- subop
+							Funct when "10",
+							"000" when others;
 	
 		-- ULACtl = 000 -> AND
 		andop <= A and B;
@@ -121,7 +142,7 @@ architecture logic of ula is
 
 		R <= result;
 		Zero <= '1' when result = x"0000" else '0';
-
+		
 		with ULACtl select
             Overflow <= addof when "010",
                         subof when "100",
