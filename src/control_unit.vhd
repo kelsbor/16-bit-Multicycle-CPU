@@ -88,7 +88,7 @@ begin
         PCWrite <= '1';
         MemRead <= '1';
         IRWrite <= '1';
-        AluOp <=  "010";
+        AluOp <=  "00";
         AluSrcB <= "01";
         PCSrc <= "01";
         next_state <= S_ID;
@@ -169,21 +169,21 @@ begin
 
       when S_MEM_WR =>
           IorD <= '1';
-          MemRead <= '1';
+          MemWrite <= '1';
           next_state <= S_IF;
 
       when S_EX_BEQ =>
           PCWriteCond <= '1';
           AluOp <= "01";
           AluSrcA <= '1';
-          PCSrc <= "01";
+          PCSrc <= "00";
           next_state <= S_IF;
 
       when S_EX_BNE =>
           PCWriteCond <= '1';
           AluOp <= "01";
           AluSrcA <= '1';
-          PCSrc <= "01";
+          PCSrc <= "00";
           BNE <= '1';
           next_state <= S_IF;
 
@@ -191,7 +191,7 @@ begin
           PCWrite <= '1';
           AluSrcA <= '1';
           AluSrcB <= "11";
-          PCSrc <= "01";
+          PCSrc <= "10";
           next_state <= S_IF;
 
       when others =>
