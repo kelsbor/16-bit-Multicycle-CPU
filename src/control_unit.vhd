@@ -17,7 +17,6 @@ entity control_unit is
         RegDst      : out std_logic;
         MemtoReg    : out std_logic;
         AluOp       : out std_logic_vector(1 downto 0); 
-        Funct       : out std_logic_vector(2 downto 0); 
         AluSrcA     : out std_logic;
         AluSrcB     : out std_logic_vector(1 downto 0); 
         PCSrc       : out std_logic_vector(1 downto 0);
