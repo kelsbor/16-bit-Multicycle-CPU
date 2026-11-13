@@ -3,6 +3,7 @@
 **/incremental_db/
 **/output_files/
 **/simulation/modelsim/rtl_work/
+**/simulation/modelsim
 *.qws
 *.rpt
 *.summary
