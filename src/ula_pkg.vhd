@@ -59,7 +59,7 @@ package ula_pkg is
 			-- 00 | AddOp
 			-- 01 | SubOp
 			-- 10 | Funct do tipo R repassado para a ULA
-			AluOp		: in std_logic_vector(1 downto 0)-
+			AluOp		: in std_logic_vector(1 downto 0)
 		);
 	end component;
 	
@@ -102,7 +102,7 @@ package ula_pkg is
       
       constant ALU_OP_ADD : std_logic_vector(1 downto 0) := "00";
       constant ALU_OP_SUB : std_logic_vector(1 downto 0) := "01";
-      constant ALU_OP_R : std_logic_vector(1 downto 0) := "10";
+      constant ALU_OP_R : std_logic_vector(1 downto 0) := "10"
     );
   end component;
 end package ula_pkg;
