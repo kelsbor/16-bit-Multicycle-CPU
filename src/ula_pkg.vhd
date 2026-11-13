@@ -83,7 +83,7 @@ package ula_pkg is
 		);
 	end component;
 
-  component cpu_pkg is
+  package cpu_pkg is
     port(
       constant WORD_WIDTH : natural := 16;
       constant OPCODE_WIDTH : natural := 4;
@@ -104,5 +104,5 @@ package ula_pkg is
       constant ALU_OP_SUB : std_logic_vector(1 downto 0) := "01";
       constant ALU_OP_R : std_logic_vector(1 downto 0) := "10"
     );
-  end component;
+  end package cpu_pkg;
 end package ula_pkg;
