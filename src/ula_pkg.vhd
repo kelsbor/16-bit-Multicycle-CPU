@@ -56,4 +56,18 @@ package ula_pkg is
 		 
 		);
 	end component;
+	
+	component pc is
+		port (
+		  PcSource : in std_logic;
+		  PcWriteCond : in std_logic;
+		  PcWrite : in std_logic;
+		  Zero : in std_logic;
+        clk    : in  std_logic;
+        reset  : in  std_logic;
+        ALUOutData : in  std_logic_vector(15 downto 0);
+		  ALUResultData : in std_logic_vector(15 downto 0);
+		  JumpAddressData : in std_logic_vector(15 downto 0);
+        pc_out : out std_logic_vector(15 downto 0)
+		);
 end package ula_pkg;
