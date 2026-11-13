@@ -4,14 +4,17 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity instruction_memory is
+entity memory_unit is
     port (
-        pc_out  			: in  std_logic_vector(31 downto 0);
-        instruction_out : out std_logic_vector(31 downto 0)
+		  mem_read : in std_logic;
+		  mem_write : in std_logic;
+        pc_out  			: in  std_logic_vector(15 downto 0);
+		  write_data : in std_logic_vector(15 downto 0);
+        instruction_out : out std_logic_vector(15 downto 0)
     );
-end entity instruction_memory;
+end entity memory_unit;
 
-architecture instruction_memory_behaviour of instruction_memory is 
+architecture memory_unit_behaviour of memory_unit is 
   
   type rom_type is array (0 to 15) of std_logic_vector(31 downto 0);
 
@@ -31,4 +34,4 @@ begin
   instruction_out <= instructions(to_integer(unsigned(pc_out(5 downto 2))));
 
 
-end architecture instruction_memory_behaviour;
+end architecture memory_unit_behaviour;

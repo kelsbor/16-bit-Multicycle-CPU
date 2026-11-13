@@ -5,7 +5,7 @@ use ieee.std_logic_1164.all;
 
 entity pc is
     port (
-	     PcSource : in std_logic;
+	     PcSrc : in std_logic_vector(1 downto 0);
 		  PcWriteCond : in std_logic;
 		  PcWrite : in std_logic;
 		  zero : in std_logic;
@@ -21,17 +21,20 @@ end entity pc;
 architecture pc_behaviour of pc is 
 	 signal write : std_logic;
 	 signal source : std_logic_vector(15 downto 0);
-	 
-	 with PcSource select
-		source <= 
 begin
-	 write <= PCWrite OR (PCWriteCond & zero);
+	 with PcSrc select
+		source <= JumpAddressData when "10",
+					 ALUResultData when "01",
+					 AluOutData when "00";
+	
+	 write <= PCWrite OR (PCWriteCond and zero);
+	 
     process(clk, reset)
     begin
         if reset = '1' then
             pc_out <= (others => '0');
-        elsif (rising_edge(clk) & write) then
-            pc_out <= pc_in;
+        elsif (rising_edge(clk) AND write='1') then
+            pc_out <= source;
         end if;
     end process;
 end architecture pc_behaviour;

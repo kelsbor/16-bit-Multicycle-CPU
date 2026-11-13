@@ -39,10 +39,10 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE115F29C7
-set_global_assignment -name TOP_LEVEL_ENTITY datapath_board
+set_global_assignment -name TOP_LEVEL_ENTITY control_unit
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 20.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "14:39:29  OCTOBER 01, 2026"
-set_global_assignment -name LAST_QUARTUS_VERSION "20.1.1 Lite Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "20.1.0 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -145,9 +145,7 @@ set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH datapath_tb -se
 set_global_assignment -name EDA_TEST_BENCH_NAME ula_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id ula_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ula_tb -section_id ula_tb
-set_global_assignment -name VHDL_FILE datapath.vhd
-set_global_assignment -name VHDL_FILE datapath_board.vhd
-set_global_assignment -name VHDL_FILE datapath_tb.vhd
+set_global_assignment -name VHDL_FILE control_unit.vhd
 set_global_assignment -name VHDL_FILE register_memory.vhd
 set_global_assignment -name VHDL_FILE pc.vhd
 set_global_assignment -name VHDL_FILE instruction_memory.vhd
