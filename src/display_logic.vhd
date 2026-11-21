@@ -4,10 +4,9 @@ use ieee.std_logic_1164.all;
 
 entity display_logic is
     port (
-        R           : in std_logic_vector(15 downto 0); 
-        boardA      : in std_logic_vector(7 downto 0);
-        boardB      : in std_logic_vector(7 downto 0);
-        
+        val_hex0_3  : in std_logic_vector(15 downto 0); -- Mostra PC (HEX3..HEX0)
+        val_hex4_7  : in std_logic_vector(15 downto 0); -- Mostra RDM ou ULA (HEX7..HEX4)
+		  
         -- Saídas para os displays
         HEX0        : out std_logic_vector(6 downto 0);
         HEX1        : out std_logic_vector(6 downto 0);
@@ -49,18 +48,15 @@ begin
     -- MAPEAMENTO DOS DISPLAYS
     -- ==========================================
     
-    -- HEX3 a HEX0 recebem os 16 bits de R em hexadecimal.
-    HEX0 <= decode_7seg(R(3 downto 0));
-    HEX1 <= decode_7seg(R(7 downto 4));
-    HEX2 <= decode_7seg(R(11 downto 8));
-    HEX3 <= decode_7seg(R(15 downto 12));
+    -- HEX3 a HEX0 mostram o valor de PC (16 bits)
+    HEX0 <= decode_7seg(val_hex0_3(3 downto 0));
+    HEX1 <= decode_7seg(val_hex0_3(7 downto 4));
+    HEX2 <= decode_7seg(val_hex0_3(11 downto 8));
+    HEX3 <= decode_7seg(val_hex0_3(15 downto 12));
 
-    -- HEX5 a HEX4 recebem boardB (8 bits = 2 blocos de 4 bits)
-    HEX4 <= decode_7seg(boardB(3 downto 0));
-    HEX5 <= decode_7seg(boardB(7 downto 4));
-
-    -- HEX7 a HEX6 recebem boardA (8 bits = 2 blocos de 4 bits)
-    HEX6 <= decode_7seg(boardA(3 downto 0));
-    HEX7 <= decode_7seg(boardA(7 downto 4));
-
+    -- HEX7 a HEX4 mostram RDM ou Saída da ULA (16 bits)
+    HEX4 <= decode_7seg(val_hex4_7(3 downto 0));
+    HEX5 <= decode_7seg(val_hex4_7(7 downto 4));
+    HEX6 <= decode_7seg(val_hex4_7(11 downto 8));
+    HEX7 <= decode_7seg(val_hex4_7(15 downto 12));
 end behavior;

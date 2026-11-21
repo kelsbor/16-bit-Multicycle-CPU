@@ -20,7 +20,9 @@ entity control_unit is
         AluSrcA     : out std_logic;
         AluSrcB     : out std_logic_vector(1 downto 0); 
         PCSrc       : out std_logic_vector(1 downto 0);
-        BNE         : out std_logic
+        BNE         : out std_logic;
+		  
+		  state_out : out std_logic_vector(4 downto 0)
   );
 end entity control_unit;
 
@@ -84,7 +86,9 @@ begin
     next_state <= S_IF;
 
     case current_state is
+
       when S_IF =>
+		  state_out  <= "00001"; -- LEDG(0): Fetch
         PCWrite <= '1';
         MemRead <= '1';
         IRWrite <= '1';
@@ -95,6 +99,7 @@ begin
 
       when S_ID => 
         AluSrcB <= "11";  
+		  state_out  <= "00010"; -- LEDG(1): Decode
 
         case opcode is
           when OP_AND | OP_SUB | OP_ADD | OP_OR | OP_SLT =>
@@ -117,17 +122,16 @@ begin
         
           when others =>
             next_state <= S_IF;
-            
-        
         end case;
 
       when S_EX_R =>
+		  state_out  <= "00100"; -- LEDG(2): Execução
         AluSrcA <= '1';
         AluOp <= "10";
         next_state <= S_WB_R;
-      
+		  
       when S_EX_ADDI =>
-
+		  state_out  <= "00100"; -- LEDG(2): Execução
         AluOp <= "00";
         AluSrcA <= '1';
         AluSrcB <= "10";
@@ -146,6 +150,7 @@ begin
         next_state <= S_IF;
 
       when S_EX_MEM => 
+		  state_out  <= "00100"; -- LEDG(2): Execução
         AluOp <=  "00";
         AluSrcA <= '1';
         AluSrcB <= "10";
@@ -158,21 +163,25 @@ begin
         end if;
 
       when S_MEM_RD =>
+			 state_out  <= "01000"; -- LEDG(3): Memória
           IorD <= '1';
           MemRead <= '1';
           next_state <= S_WB_LD;
 
       when S_WB_LD =>
+		    state_out  <= "10000"; -- LEDG(4): Write-Back
           RegWrite <= '1';
           MemtoReg <= '1';
           next_state <= S_IF;
 
       when S_MEM_WR =>
+			 state_out  <= "01000"; -- LEDG(3): Memória
           IorD <= '1';
           MemWrite <= '1';
           next_state <= S_IF;
 
       when S_EX_BEQ =>
+		    state_out  <= "00100"; -- LEDG(2): Execução
           PCWriteCond <= '1';
           AluOp <= "01";
           AluSrcA <= '1';
@@ -180,6 +189,7 @@ begin
           next_state <= S_IF;
 
       when S_EX_BNE =>
+		    state_out  <= "00100"; -- LEDG(2): Execução
           PCWriteCond <= '1';
           AluOp <= "01";
           AluSrcA <= '1';
@@ -188,6 +198,7 @@ begin
           next_state <= S_IF;
 
       when S_EX_JMP =>
+		    state_out  <= "00100"; -- LEDG(2): Execução
           PCWrite <= '1';
           AluSrcA <= '1';
           AluSrcB <= "11";
@@ -195,6 +206,7 @@ begin
           next_state <= S_IF;
 
       when others =>
+			 state_out  <= "00000";
           next_state <= S_IF;        
 
     end case;

@@ -9,6 +9,7 @@ entity pc is
 		  PcWriteCond : in std_logic;
 		  PcWrite : in std_logic;
 		  zero : in std_logic;
+		  BNE : in std_logic;
         clk    : in  std_logic;
         reset  : in  std_logic;
         ALUOutData : in  std_logic_vector(15 downto 0);
@@ -21,13 +22,15 @@ end entity pc;
 architecture pc_behaviour of pc is 
 	 signal write : std_logic;
 	 signal source : std_logic_vector(15 downto 0);
+	 
 begin
 	 with PcSrc select
 		source <= JumpAddressData when "10",
 					 ALUResultData when "01",
-					 AluOutData when "00";
+					 AluOutData when "00",
+					 (others => '0') when others;
 	
-	 write <= PCWrite OR (PCWriteCond and zero);
+	 write <= PCWrite OR (PCWriteCond and (zero XOR BNE));
 	 
     process(clk, reset)
     begin
@@ -37,4 +40,5 @@ begin
             pc_out <= source;
         end if;
     end process;
+	 
 end architecture pc_behaviour;

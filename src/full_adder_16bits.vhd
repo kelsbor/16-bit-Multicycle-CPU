@@ -1,7 +1,7 @@
 -- Integrantes: Carlos Nascimento, Guilherme Dias, Daniel Wu, Kelvin Borges
 library ieee;
 use ieee.std_logic_1164.all;
-use work.ula_pkg.all;
+use work.datapath_pkg.all;
 
 entity full_adder_16bits is
 	port(

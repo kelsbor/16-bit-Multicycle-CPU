@@ -2,7 +2,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-package ula_pkg is
+package datapath_pkg is
 	component full_adder is		-- inicio component
 		port (
 			-- declaracao das portas in e out do componente
@@ -65,10 +65,8 @@ package ula_pkg is
 	
 	component display_logic is 
 			port (
-			  -- Novas entradas substituindo 'number'
-			  R           : in std_logic_vector(15 downto 0); 
-			  boardA      : in std_logic_vector(7 downto 0);
-			  boardB      : in std_logic_vector(7 downto 0);
+			  val_hex0_3 : in std_logic_vector(15 downto 0);
+			  val_hex4_7 : in std_logic_vector(15 downto 0);
 			  
 			  -- Saídas para os displays
 			  HEX0        : out std_logic_vector(6 downto 0);
@@ -101,22 +99,71 @@ package ula_pkg is
         AluSrcA     : out std_logic;
         AluSrcB     : out std_logic_vector(1 downto 0); 
         PCSrc       : out std_logic_vector(1 downto 0);
-        BNE         : out std_logic
+        BNE         : out std_logic;
+		  state_out   : out std_logic_vector(4 downto 0)
     );
   end component;
 	
 	component pc is
 		port (
-		  PcSrc : in std_logic;
+	     PcSrc : in std_logic_vector(1 downto 0);
 		  PcWriteCond : in std_logic;
 		  PcWrite : in std_logic;
-		  Zero : in std_logic;
+		  zero : in std_logic;
+		  BNE : in std_logic;
         clk    : in  std_logic;
         reset  : in  std_logic;
         ALUOutData : in  std_logic_vector(15 downto 0);
 		  ALUResultData : in std_logic_vector(15 downto 0);
 		  JumpAddressData : in std_logic_vector(15 downto 0);
         pc_out : out std_logic_vector(15 downto 0)
+    );
+	end component;
+	
+	component memory_data_register is
+		port (
+			clk : in std_logic;
+			reset : in std_logic;
+			mem_data : in std_logic_vector(15 downto 0);
+			mdr_out : out std_logic_vector(15 downto 0)
+	);
+	end component;
+	
+	component instruction_register is
+		port (
+		clk : in std_logic;
+		reset : in std_logic;
+		IRwrite : in std_logic;
+		mem_data : in std_logic_vector(15 downto 0);
+		instruction : out std_logic_vector(15 downto 0)
+	);
+	end component;
+
+	component memory_unit is
+		port (
+		  mem_read : in std_logic;
+		  mem_write : in std_logic;
+		  clk : in std_logic;
+		  IorD : in std_logic;
+		  pc_out  : in std_logic_vector(15 downto 0);
+		  AluOutData : in std_logic_vector(15 downto 0);
+		  write_data : in std_logic_vector(15 downto 0);
+        data : out std_logic_vector(15 downto 0)
+    );
+	end component;
+	
+	component register_bank is
+		port (
+			clk        : in std_logic;
+			reg_write  : in std_logic;
+			reset      : in std_logic;
+			read_reg1  : in std_logic_vector(2 downto 0);
+			read_reg2  : in std_logic_vector(2 downto 0);
+			read_data1 : out std_logic_vector(15 downto 0);
+			read_data2 : out std_logic_vector(15 downto 0);
+			write_reg  : in std_logic_vector(2 downto 0);
+			write_data : in std_logic_vector(15 downto 0)
 		);
 	end component;
-end package ula_pkg;
+	
+end package datapath_pkg;
