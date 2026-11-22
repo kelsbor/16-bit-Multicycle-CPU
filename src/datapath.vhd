@@ -31,8 +31,10 @@ architecture datapath_behaviour of datapath is
     signal s_IorD        : std_logic;
     signal s_MemRead     : std_logic;
     signal s_MemWrite    : std_logic;
+	 signal s_write_reg  : std_logic_vector(2 downto 0);
     signal s_IRWrite     : std_logic;
     signal s_RegWrite    : std_logic;
+	 signal s_ReadReg2Sel : std_logic;
     signal s_RegDst      : std_logic;
     signal s_MemtoReg    : std_logic;
     signal s_AluOp       : std_logic_vector(1 downto 0);
@@ -53,6 +55,7 @@ architecture datapath_behaviour of datapath is
     signal reg_B         : std_logic_vector(15 downto 0);
     signal s_write_data  : std_logic_vector(15 downto 0);
     
+	 
     signal s_ula_res     : std_logic_vector(15 downto 0);
     signal s_alu_out     : std_logic_vector(15 downto 0);
     signal s_zero        : std_logic;
@@ -80,6 +83,7 @@ begin
         MemWrite    => s_MemWrite,
         IRWrite     => s_IRWrite,
         RegWrite    => s_RegWrite,
+		  ReadReg2Sel => s_ReadReg2Sel,
         RegDst      => s_RegDst,
         MemtoReg    => s_MemtoReg,
         AluOp       => s_AluOp,
@@ -139,8 +143,10 @@ begin
 	
 	-- 5. Banco de Registradores
 	-- Rj vai para read_reg1 (A). read_reg2 recebe Rk (Tipo R) ou Ri (ST/BEQ/BNE).
-   s_read_reg2  <= s_ir(5 downto 3) when s_RegDst = '1' else s_ir(11 downto 9);
-   s_write_data <= s_mdr when s_MemtoReg = '1' else s_alu_out;
+   
+	s_read_reg2 <= s_ir(5 downto 3) when s_ReadReg2Sel = '1' else s_ir(11 downto 9);
+   s_write_reg <= s_ir(11 downto 9);
+	s_write_data <= s_mdr when s_MemtoReg = '1' else s_alu_out;
 	
 	inst_regbank : register_bank
 		port map (
@@ -149,7 +155,7 @@ begin
         reg_write  => s_RegWrite,
         read_reg1  => s_ir(8 downto 6),  -- Rj
         read_reg2  => s_read_reg2,       -- Rk ou Ri
-        write_reg  => s_ir(11 downto 9), -- Ri é sempre o destino de escrita
+        write_reg => s_write_reg, -- Ri é sempre o destino de escrita
         write_data => s_write_data,
         read_data1 => s_read_data1,
         read_data2 => s_read_data2

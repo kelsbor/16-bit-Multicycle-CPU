@@ -14,6 +14,7 @@ entity control_unit is
         MemWrite    : out std_logic;
         IRWrite     : out std_logic;
         RegWrite    : out std_logic;
+		  ReadReg2Sel : out std_logic;
         RegDst      : out std_logic;
         MemtoReg    : out std_logic;
         AluOp       : out std_logic_vector(1 downto 0); 
@@ -76,6 +77,7 @@ begin
     MemWrite <= '0';
     IRWrite <= '0';
     RegWrite <= '0';
+	 ReadReg2Sel <= '0';
     RegDst <= '0';
     MemtoReg <= '0';
     AluOp <= "00";
@@ -97,13 +99,21 @@ begin
         PCSrc <= "01";
         next_state <= S_ID;
 
-      when S_ID => 
-        AluSrcB <= "11";  
-		  state_out  <= "00010"; -- LEDG(1): Decode
+		when S_ID =>
+			state_out <= "00010";
+			AluSrcA <= '0';
+			AluSrcB <= "11";
+			AluOp   <= "00";
 
+    -- Preparação do endereço para BEQ e BNE
+			if opcode = OP_BEQ or opcode = OP_BNE then
+				AluSrcB <= "10";  -- Seleciona imediato estendido
+			end if;
+	 
         case opcode is
-          when OP_AND | OP_SUB | OP_ADD | OP_OR | OP_SLT =>
-            next_state <= S_EX_R;
+          when OP_ADD | OP_SUB | OP_AND | OP_OR | OP_SLT =>
+				ReadReg2Sel <= '1';
+				next_state <= S_EX_R;
 
           when OP_ADDI => 
             next_state <= S_EX_ADDI;
@@ -139,6 +149,8 @@ begin
         next_state <= S_WB_R;
 
       when S_WB_R =>
+			
+		  state_out <= "10000";   -- LEDG(4): Write-Back
         RegWrite <= '1';
         MemtoReg <= '0';
         if opcode = OP_ADDI then
