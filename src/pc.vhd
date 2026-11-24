@@ -36,8 +36,10 @@ begin
     begin
         if reset = '1' then
             pc_out <= (others => '0');
-        elsif (rising_edge(clk) AND write='1') then
-            pc_out <= source;
+        elsif rising_edge(clk) then
+            if write = '1' then
+                pc_out <= source;
+            end if;
         end if;
     end process;
 	 

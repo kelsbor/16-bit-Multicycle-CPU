@@ -15,7 +15,6 @@ entity control_unit is
         IRWrite     : out std_logic;
         RegWrite    : out std_logic;
 		  ReadReg2Sel : out std_logic;
-        RegDst      : out std_logic;
         MemtoReg    : out std_logic;
         AluOp       : out std_logic_vector(1 downto 0); 
         AluSrcA     : out std_logic;
@@ -79,7 +78,6 @@ begin
     IRWrite <= '0';
     RegWrite <= '0';
 	 ReadReg2Sel <= '0';
-    RegDst <= '0';
     MemtoReg <= '0';
     AluOp <= "00";
     AluSrcA <= '0';
@@ -110,7 +108,6 @@ begin
           when OP_ADD | OP_SUB | OP_AND | OP_OR | OP_SLT =>
             ReadReg2Sel <= '1';
             next_state <= S_EX_R;
-            RegDst <= '1';
 
           when OP_ADDI => 
             next_state <= S_EX_ADDI;
@@ -155,7 +152,6 @@ begin
         AluOp <=  "00";
         AluSrcA <= '1';
         AluSrcB <= "10";
-        PCSrc <= "01";
         if opcode = OP_LD then
           next_state <= S_MEM_RD;
 

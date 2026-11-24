@@ -20,19 +20,18 @@ entity ula is
 			
 			-- Todas as entradas
 			A_PC		: in std_logic_vector(15 downto 0);
-			A_Ri_data: in std_logic_vector(15 downto 0);
-			
-			B_Rj_data: in std_logic_vector(15 downto 0);
-			B_4		: in std_logic_vector(15 downto 0);
-			B_Ime		: in std_logic_vector(15 downto 0);
-			B_End		: in std_logic_vector(15 downto 0);
+			A_operand: in std_logic_vector(15 downto 0);
+			B_operand: in std_logic_vector(15 downto 0);
+			PC_increment: in std_logic_vector(15 downto 0);
+			Immediate_operand: in std_logic_vector(15 downto 0);
+			Jump_operand: in std_logic_vector(15 downto 0);
 			
 			-- 000 | AndOp
 			-- 001 | OrOp
 			-- 010 | AddOp
 			-- 100 | SubOp
 			-- 110 | SltOp
-			-- 111 | NotOp
+			-- 111 | NorOp
 			Funct		: in std_logic_vector(2 downto 0);
 			
 			-- 00 | AddOp
@@ -75,13 +74,13 @@ architecture logic of ula is
 		-- multiplexaçao das entradas
 		with AluSrcA select
 			A <=	A_PC when '0',
-					A_Ri_data when others;
+					A_operand when others;
 					
 		with AluSrcB select
-			B <=	B_Rj_data when "00",
-					B_4 when "01",
-					B_Ime when "10",
-					B_End when "11",
+			B <=	B_operand when "00",
+					PC_increment when "01",
+					Immediate_operand when "10",
+					Jump_operand when "11",
 					(others => '0') when others;
 					
 		-- Operaçao com base em Function ou ALUOp

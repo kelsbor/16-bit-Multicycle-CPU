@@ -26,8 +26,6 @@ architecture register_bank_behaviour of register_bank is
   type reg_array is array (0 to 7) of std_logic_vector(15 downto 0);
 
   signal registers : reg_array := (
-    1 => X"0005",
-    2 => X"0003",
     others => (others => '0')
   );
 
@@ -35,7 +33,7 @@ begin
   process(clk, reset)
   begin
     if reset = '1' then
-      registers <= (1 => X"0005", 2 => X"0003", others => (others => '0'));
+      registers <= (others => (others => '0'));
     elsif rising_edge(clk) then
       if reg_write = '1' and to_integer(unsigned(write_reg)) /= 0 then 
         registers(to_integer(unsigned(write_reg))) <= write_data;

@@ -29,7 +29,6 @@ architecture hardware of datapath_board is
     signal s_reset      : std_logic;
 
     signal s_pc         : std_logic_vector(15 downto 0);
-    signal s_inst       : std_logic_vector(15 downto 0);
     signal s_ula_res    : std_logic_vector(15 downto 0);
 	 signal s_mdr          : std_logic_vector(15 downto 0);
     signal s_mux_hex4_7   : std_logic_vector(15 downto 0);
@@ -45,7 +44,7 @@ begin
             reset           => s_reset,
             
             pc_current      => s_pc,
-            instruction_out => s_inst,
+            instruction_out => open,
             ula_result      => s_ula_res,
             
 				mdr_out => s_mdr, 
