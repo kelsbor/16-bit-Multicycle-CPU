@@ -34,7 +34,6 @@ architecture datapath_behaviour of datapath is
 	 signal s_write_reg  : std_logic_vector(2 downto 0);
     signal s_IRWrite     : std_logic;
     signal s_RegWrite    : std_logic;
-	 signal s_ReadReg2Sel : std_logic;
     signal s_RegDst      : std_logic;
     signal s_MemtoReg    : std_logic;
     signal s_AluOp       : std_logic_vector(1 downto 0);
@@ -144,7 +143,7 @@ begin
 	-- 5. Banco de Registradores
 	-- Rj vai para read_reg1 (A). read_reg2 recebe Rk (Tipo R) ou Ri (ST/BEQ/BNE).
    
-	s_read_reg2 <= s_ir(5 downto 3) when s_ReadReg2Sel = '1' else s_ir(11 downto 9);
+	s_read_reg2 <= s_ir(5 downto 3) when s_RegDst = '1' else s_ir(11 downto 9);
    s_write_reg <= s_ir(11 downto 9);
 	s_write_data <= s_mdr when s_MemtoReg = '1' else s_alu_out;
 	

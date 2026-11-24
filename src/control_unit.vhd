@@ -14,7 +14,6 @@ entity control_unit is
         MemWrite    : out std_logic;
         IRWrite     : out std_logic;
         RegWrite    : out std_logic;
-		  ReadReg2Sel : out std_logic;
         RegDst      : out std_logic;
         MemtoReg    : out std_logic;
         AluOp       : out std_logic_vector(1 downto 0); 
@@ -105,7 +104,6 @@ begin
 			AluSrcB <= "11";
 			AluOp   <= "00";
 
-    -- Preparação do endereço para BEQ e BNE
 			if opcode = OP_BEQ or opcode = OP_BNE then
 				AluSrcB <= "10";  -- Seleciona imediato estendido
 			end if;

@@ -93,7 +93,6 @@ package datapath_pkg is
         MemWrite    : out std_logic;
         IRWrite     : out std_logic;
         RegWrite    : out std_logic;
-		  ReadReg2Sel : out std_logic;
         RegDst      : out std_logic;
         MemtoReg    : out std_logic;
         AluOp       : out std_logic_vector(1 downto 0); 
