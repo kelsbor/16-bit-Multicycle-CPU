@@ -29,6 +29,7 @@ architecture datapath_behaviour of datapath is
     signal s_PCWriteCond : std_logic;
     signal s_PCWrite     : std_logic;
     signal s_IorD        : std_logic;
+    signal s_mem_clk    : std_logic;
     signal s_MemRead     : std_logic;
     signal s_MemWrite    : std_logic;
 	 signal s_write_reg  : std_logic_vector(2 downto 0);
@@ -67,6 +68,9 @@ architecture datapath_behaviour of datapath is
     signal s_jump_addr   : std_logic_vector(15 downto 0);
 
 begin   
+
+
+  s_mem_clk <= not clk;
 	
 	-- Mapeamento dos componentes com os sinais declarados
 	-- 1. Unidade de Controle (FSM)
@@ -82,7 +86,6 @@ begin
         MemWrite    => s_MemWrite,
         IRWrite     => s_IRWrite,
         RegWrite    => s_RegWrite,
-		  ReadReg2Sel => s_ReadReg2Sel,
         RegDst      => s_RegDst,
         MemtoReg    => s_MemtoReg,
         AluOp       => s_AluOp,
@@ -112,7 +115,7 @@ begin
 	-- 3. Unidade de memoria
 	inst_mem : memory_unit
 		port map (
-        clk        => clk,
+        clk        => s_mem_clk,
         IorD       => s_IorD,
         mem_read   => s_MemRead,
         mem_write  => s_MemWrite,
@@ -189,11 +192,11 @@ begin
         AluSrcA   => s_AluSrcA,
         AluSrcB   => s_AluSrcB,
         A_PC      => s_pc_out,
-        A_Ri_data => reg_A,
-        B_Rj_data => reg_B,
-        B_4       => x"0001",    -- Incremento de +1 palavra no PC
-        B_Ime     => s_imm_ext,
-        B_End     => s_jump_addr,
+        A_operand => reg_A,
+        B_operand => reg_B,
+        PC_increment => x"0001",
+        Immediate_operand => s_imm_ext,
+        Jump_operand => s_jump_addr,
         Funct     => s_ir(2 downto 0),
         AluOp     => s_AluOp
       );

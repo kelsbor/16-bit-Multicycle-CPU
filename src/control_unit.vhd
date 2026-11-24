@@ -69,6 +69,7 @@ begin
 
   process(current_state, opcode)
   begin
+    state_out <= "00000";
     PCWriteCond <= '0';
     PCWrite <= '0';
     IorD <= '0';
@@ -76,8 +77,7 @@ begin
     MemWrite <= '0';
     IRWrite <= '0';
     RegWrite <= '0';
-	 ReadReg2Sel <= '0';
-    RegDst <= '0';
+    RegDst  <= '0';
     MemtoReg <= '0';
     AluOp <= "00";
     AluSrcA <= '0';
@@ -101,7 +101,7 @@ begin
 		when S_ID =>
 			state_out <= "00010";
 			AluSrcA <= '0';
-			AluSrcB <= "11";
+			AluSrcB <= "10";
 			AluOp   <= "00";
 
 			if opcode = OP_BEQ or opcode = OP_BNE then
@@ -110,8 +110,8 @@ begin
 	 
         case opcode is
           when OP_ADD | OP_SUB | OP_AND | OP_OR | OP_SLT =>
-				ReadReg2Sel <= '1';
-				next_state <= S_EX_R;
+            RegDst <= '1';
+            next_state <= S_EX_R;
 
           when OP_ADDI => 
             next_state <= S_EX_ADDI;
@@ -143,20 +143,12 @@ begin
         AluOp <= "00";
         AluSrcA <= '1';
         AluSrcB <= "10";
-        PCSrc <= "01";
         next_state <= S_WB_R;
 
       when S_WB_R =>
-			
-		  state_out <= "10000";   -- LEDG(4): Write-Back
         RegWrite <= '1';
+        state_out <= "10000";   -- LEDG(4): Write-Back
         MemtoReg <= '0';
-        if opcode = OP_ADDI then
-          RegDst <= '0';
-        else 
-          RegDst <= '1';
-        end if;
-
         next_state <= S_IF;
 
       when S_EX_MEM => 
@@ -164,7 +156,6 @@ begin
         AluOp <=  "00";
         AluSrcA <= '1';
         AluSrcB <= "10";
-        PCSrc <= "01";
         if opcode = OP_LD then
           next_state <= S_MEM_RD;
 
@@ -210,8 +201,6 @@ begin
       when S_EX_JMP =>
 		    state_out  <= "00100"; -- LEDG(2): Execução
           PCWrite <= '1';
-          AluSrcA <= '1';
-          AluSrcB <= "11";
           PCSrc <= "10";
           next_state <= S_IF;
 

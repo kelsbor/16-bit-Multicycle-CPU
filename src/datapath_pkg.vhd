@@ -41,19 +41,18 @@ package datapath_pkg is
 			
 			-- Todas as entradas
 			A_PC		: in std_logic_vector(15 downto 0);
-			A_Ri_data: in std_logic_vector(15 downto 0);
-			
-			B_Rj_data: in std_logic_vector(15 downto 0);
-			B_4		: in std_logic_vector(15 downto 0);
-			B_Ime		: in std_logic_vector(15 downto 0);
-			B_End		: in std_logic_vector(15 downto 0);
+			A_operand: in std_logic_vector(15 downto 0);
+			B_operand: in std_logic_vector(15 downto 0);
+			PC_increment: in std_logic_vector(15 downto 0);
+			Immediate_operand: in std_logic_vector(15 downto 0);
+			Jump_operand: in std_logic_vector(15 downto 0);
 			
 			-- 000 | AndOp
 			-- 001 | OrOp
 			-- 010 | AddOp
 			-- 100 | SubOp
 			-- 110 | SltOp
-			-- 111 | NotOp
+			-- 111 | NorOp
 			Funct		: in std_logic_vector(2 downto 0);
 			
 			-- 00 | AddOp
@@ -100,7 +99,7 @@ package datapath_pkg is
         AluSrcB     : out std_logic_vector(1 downto 0); 
         PCSrc       : out std_logic_vector(1 downto 0);
         BNE         : out std_logic;
-		  state_out   : out std_logic_vector(4 downto 0)
+		state_out   : out std_logic_vector(4 downto 0)
     );
   end component;
 	
