@@ -35,6 +35,7 @@ architecture datapath_behaviour of datapath is
     signal s_IRWrite     : std_logic;
     signal s_RegWrite    : std_logic;
 	 signal s_ReadReg2Sel : std_logic;
+	 signal s_mem_clk : std_logic;
     signal s_RegDst      : std_logic;
     signal s_MemtoReg    : std_logic;
     signal s_AluOp       : std_logic_vector(1 downto 0);
@@ -68,6 +69,9 @@ architecture datapath_behaviour of datapath is
     signal s_jump_addr   : std_logic_vector(15 downto 0);
 
 begin   
+
+
+  s_mem_clk <= not clk;
 	
 	-- Mapeamento dos componentes com os sinais declarados
 	-- 1. Unidade de Controle (FSM)
@@ -113,7 +117,7 @@ begin
 	-- 3. Unidade de memoria
 	inst_mem : memory_unit
 		port map (
-        clk        => clk,
+        clk        => s_mem_clk,
         IorD       => s_IorD,
         mem_read   => s_MemRead,
         mem_write  => s_MemWrite,

@@ -40,8 +40,8 @@ begin
 			if mem_write ='1' then
 				ram(index) <= write_data;
 			end if;
+      data <= ram(to_integer(unsigned(selected_addr(7 downto 0))));
 		end if;
 	end process;
 	
-	data <= ram(to_integer(unsigned(selected_addr(7 downto 0)))) when mem_read = '1' else (others => '0');
 end architecture memory_unit_behaviour;

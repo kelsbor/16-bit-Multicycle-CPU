@@ -52,35 +52,62 @@ CONTENT BEGIN
     -- Opcode=0101 (ADDI), Ri=011 ($3), Rj=011 ($3), Imm=000100 (4)
     05 : 0101011011000100;
 
-    -- PC = 0x06: ST $3, $0, 32   ->  Mem[0 + 32 (0x20)] = $3 (salva 0x000C na posicao 0x20)
-    -- Opcode=0111 (ST), Ri=011 ($3 - dado), Rj=000 ($0 - base), Imm=100000 (32 = 0x20)
-    06 : 0111011000100000;
+    -- PC = 0x06: ST $3, $0, 16   ->  Mem[0 + 16 (0x10)] = $3 (salva 0x000C na posicao 0x10)
+    -- Opcode=0111 (ST), Ri=011 ($3 - dado), Rj=000 ($0 - base), Imm=010000 (16 = 0x10)
+    06 : 0111011000010000;
 
-    -- PC = 0x07: LD $4, $0, 32   ->  $4 = Mem[0 + 32 (0x20)] = 0x000C (carrega 0x000C no RDM e em $4)
-    -- Opcode=0110 (LD), Ri=100 ($4 - destino), Rj=000 ($0 - base), Imm=100000 (32 = 0x20)
-    07 : 0110100000100000;
+    -- PC = 0x07: LD $4, $0, 16   ->  $4 = Mem[0 + 16 (0x10)] = 0x000C (carrega 0x000C no RDM e em $4)
+    -- Opcode=0110 (LD), Ri=100 ($4 - destino), Rj=000 ($0 - base), Imm=010000 (16 = 0x10)
+    07 : 0110100000010000;
 
     -- ------------------------------------------------------------------------
-    -- 3. TESTE DE DESVIOS CONDICIONAIS (BNE / BEQ) E INCONDICIONAL (JMP)
+    -- 3. TESTE DE IMEDIATO NEGATIVO (ADDI) E SLT FALSO (RESULTADO = 0)
     -- ------------------------------------------------------------------------
 
-    -- PC = 0x08: BNE $3, $4, 2   ->  $3 (0x000C) == $4 (0x000C), entao NAO salta! Vai para PC = 0x09
-    -- Opcode=1001 (BNE), Ri=011 ($3), Rj=100 ($4), Imm=000010 (2)
-    08 : 1001011100000010;
+    -- PC = 0x08: ADDI $4, $4, -2 ->  $4 = $4 + (-2) = 12 - 2 = 10 (0x000A)
+    -- Opcode=0101 (ADDI), Ri=100 ($4), Rj=100 ($4), Imm=111110 (-2 em complemento de 2)
+    08 : 0101100100111110;
 
-    -- PC = 0x09: BEQ $3, $4, 1   ->  $3 == $4, entao SALTA! PC = PC_atual(0x0A) + 1 = 0x0B (pula 0x0A)
-    -- Opcode=1000 (BEQ), Ri=011 ($3), Rj=100 ($4), Imm=000001 (1)
-    09 : 1000011100000001;
+    -- PC = 0x09: SLT $7, $1, $2  ->  $7 = ($1 < $2) ? 1 : 0 = (5 < 3) = 0 (0x0000)
+    -- Opcode=0100 (SLT), Ri=111 ($7), Rj=001 ($1), Rk=010 ($2), Funct=110 (SltOp)
+    09 : 0100111001010110;
 
-    -- PC = 0x0A: ADD $1, $0, $0  ->  Instrucao armadilha (deve ser pulada pelo BEQ acima!)
-    0A : 0000001000000010;
+    -- ------------------------------------------------------------------------
+    -- 4. TESTE DE DESVIOS CONDICIONAIS (BNE / BEQ: TOMADO, NAO TOMADO E NEGATIVO) E JMP
+    -- ------------------------------------------------------------------------
 
-    -- PC = 0x0B: JMP 0x000       ->  Salto incondicional de volta ao inicio do programa (PC = 0x0000)
+    -- PC = 0x0A: BEQ $3, $4, 2   ->  $3 (12) != $4 (10), entao NAO salta! Vai para PC = 0x0B
+    -- Opcode=1000 (BEQ), Ri=011 ($3), Rj=100 ($4), Imm=000010 (2)
+    0A : 1000011100000010;
+
+    -- PC = 0x0B: BNE $3, $4, 1   ->  $3 (12) != $4 (10), entao SALTA! PC = 0x0C + 1 = 0x0D (pula 0x0C)
+    -- Opcode=1001 (BNE), Ri=011 ($3), Rj=100 ($4), Imm=000001 (1)
+    0B : 1001011100000001;
+
+    -- PC = 0x0C: ADD $1, $0, $0  ->  Instrucao armadilha (deve ser pulada pelo BNE acima!)
+    0C : 0000001000000010;
+
+    -- PC = 0x0D: BEQ $3, $3, 1   ->  $3 == $3, entao SALTA! PC = 0x0E + 1 = 0x0F (pula 0x0E)
+    -- Opcode=1000 (BEQ), Ri=011 ($3), Rj=011 ($3), Imm=000001 (1)
+    0D : 1000011011000001;
+
+    -- PC = 0x0E: ADD $2, $0, $0  ->  Instrucao armadilha (deve ser pulada pelo BEQ acima!)
+    0E : 0000010000000010;
+
+    -- PC = 0x0F: JMP 0x011       ->  Salta para 0x11 para testar desvio condicional com offset negativo
+    -- Opcode=1010 (JMP), Endereco=000000010001 (0x011)
+    0F : 1010000000010001;
+
+    -- PC = 0x10: JMP 0x000       ->  Alvo do salto reverso: reinicia o programa (PC = 0x0000)
     -- Opcode=1010 (JMP), Endereco=000000000000 (0x000)
-    0B : 1010000000000000;
+    10 : 1010000000000000;
+
+    -- PC = 0x11: BEQ $0, $0, -2  ->  $0 == $0, SALTA PARA TRAS! PC = 0x12 + (-2) = 0x10
+    -- Opcode=1000 (BEQ), Ri=000 ($0), Rj=000 ($0), Imm=111110 (-2 em complemento de 2)
+    11 : 1000000000111110;
 
     -- ------------------------------------------------------------------------
     -- AREA DE DADOS / RESTANTE DA MEMORIA ZERADA
     -- ------------------------------------------------------------------------
-    [0C..FF] : 0000000000000000;
+    [12..FF] : 0000000000000000;
 END;

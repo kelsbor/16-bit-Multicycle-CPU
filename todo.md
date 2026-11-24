@@ -8,34 +8,29 @@ Análise estática dos arquivos `.vhd`, `.mif`, `.qsf` e documentação comparad
 
 Esses erros impedem o funcionamento correto das instruções mesmo em simulação:
 
-- [ ] **Corrigir `RegDst` na Unidade de Controle (quebra TODAS as instruções Tipo R: `ADD`, `SUB`, `AND`, `OR`, `SLT`)**
+- [x] **Corrigir `RegDst` na Unidade de Controle (quebra TODAS as instruções Tipo R: `ADD`, `SUB`, `AND`, `OR`, `SLT`)**
   - Em `src/datapath.vhd` (L142–L156), `s_RegDst` multiplexa `read_reg2` (`Rk` quando `'1'`, `Ri` quando `'0'`), que é capturado em `reg_B` na borda de subida ao sair de **`S_ID`**.
   - Porém, em `src/control_unit.vhd` (L100–L150), `RegDst` fica em `'0'` durante `S_ID` e só vai para `'1'` em `S_WB_R` (tarde demais, e `write_reg` já é fixo em `Ri`). Resultado: todas as instruções Tipo R leem `Ri` em vez de `Rk` para `reg_B`.
   - **Correção:** ativar `RegDst <= '1'` no estado `S_ID` quando `opcode` for Tipo R (`OP_ADD | OP_SUB | OP_AND | OP_OR | OP_SLT`) e remover a lógica de `RegDst` de `S_WB_R`.
 
-- [ ] **Corrigir cálculo do endereço de desvio em `S_ID` (quebra `BEQ` e `BNE`)**
+- [x] **Corrigir cálculo do endereço de desvio em `S_ID` (quebra `BEQ` e `BNE`)**
   - Em `src/control_unit.vhd` (L100–L102), `S_ID` define `AluSrcB <= "11"`.
   - Em `src/ula.vhd` (L80–L85) e `src/datapath.vhd` (L189–L191), `"11"` seleciona `B_End` (`s_jump_addr = PC[15:12] & IR[11:0]`), somando `PC + s_jump_addr` em `AluOut` em vez de `PC + imediato`.
   - **Correção:** mudar para `AluSrcB <= "10"` em `S_ID` para selecionar `B_Ime` (`s_imm_ext`), já que a memória é endereçada por palavra (sem *shift left 2*).
 
-- [ ] **Corrigir falta de `state_out` em `S_WB_R` (gera *latch* indesejado e LED errado)**
+- [x] **Corrigir falta de `state_out` em `S_WB_R` (gera *latch* indesejado e LED errado)**
   - Em `src/control_unit.vhd` (L72–L87) não há valor padrão para `state_out`, e em `S_WB_R` (L141–L150) `state_out` não é atribuído.
   - **Correção:** inicializar `state_out <= "00000";` no início do processo combinacional e atribuir `state_out <= "10000";` em `S_WB_R` (assim como em `S_WB_LD`).
-
-- [ ] **Decidir/padronizar uso dos bits `[2:0]` nas instruções Tipo R (`Funct` vs `Opcode`)**
-  - O `Projeto.pdf` define os bits `[2:0]` do Tipo R como **"não usado"**, e a UC já diferencia 5 opcodes distintos (`0000` a `0100`).
-  - Porém, em `src/ula.vhd` (L88–L92) e `src/datapath.vhd` (L192), a operação da ULA vem exclusivamente de `Funct = s_ir(2 downto 0)`. Se alguém codificar um `ADD` com `[2:0] = "000"`, a ULA executará `AND`.
-  - **Opção recomendada:** decodificar a operação da ULA a partir do `opcode` (deixando `[2:0]` realmente não usado, como no PDF), **ou** manter `Funct` deixando bem explícito na especificação e garantindo que todos os testes preencham `[2:0]` corretamente.
 
 ---
 
 ## Parte 2 — Memória (`.mif`) e Síntese no Quartus
 
-- [ ] **Corrigir inferência de RAM + carregamento do `.mif` em `src/memory_unit.vhd` (L23–L46)**
+- [x] **Corrigir inferência de RAM + carregamento do `.mif` em `src/memory_unit.vhd` (L23–L46)**
   - A leitura atual (`data <= ram(...)`) é **assíncrona/combinacional**. Na Cyclone IV E (DE2-115), blocos M9K exigem leitura **síncrona**; quando a RAM cai para registradores/lógica, o Quartus **ignora `attribute ram_init_file`** e a memória sobe zerada na FPGA (além de ficar sem inicialização `'U'` na simulação).
   - **Correção:** usar memória síncrona (ou IP `RAM: 1-PORT` / `altsyncram` do Quartus vinculada ao `.mif`). Para não adicionar estados extras de espera na FSM, o clock da RAM pode usar `falling_edge(clk)` ou o `CLOCK_50` da placa.
 
-- [ ] **Corrigir imediato inválido (`32`) e ampliar cobertura em `src/ram_init.mif` (L55–L61)**
+- [x] **Corrigir imediato inválido (`32`) e ampliar cobertura em `src/ram_init.mif` (L55–L61)**
   - Nas instruções `ST` (endereço `06`) e `LD` (endereço `07`), o imediato de 6 bits está como `100000` com comentário indicando `+32 (0x20)`. Em complemento de dois de 6 bits (faixa **-32 a +31**), `100000` estende para `0xFFE0` (**-32**), acessando `0xE0` (224) e exibindo `FFE0` na ULA em vez de `0020`. Trocar para um endereço `<= 31` (ex.: `010000` = `0x10`).
   - Adicionar casos de teste faltantes para validar todas as instruções e imediatos positivos/negativos:
     - `ADDI` com imediato **negativo**;
