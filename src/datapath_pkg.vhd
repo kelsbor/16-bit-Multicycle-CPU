@@ -36,6 +36,7 @@ package datapath_pkg is
 			-- Sinais de controle
 			clk		: in std_logic;
 			rst		: in std_logic;
+			alu_out_en: in std_logic;
 			AluSrcA	: in std_logic;
 			AluSrcB	: in std_logic_vector(1 downto 0);
 			
@@ -83,6 +84,7 @@ package datapath_pkg is
     port (
         clk         : in std_logic;
         reset       : in std_logic;
+		  step_en	  : in std_logic;
         opcode      : in std_logic_vector(3 downto 0);
 
         PCWriteCond : out std_logic;
@@ -99,7 +101,8 @@ package datapath_pkg is
         AluSrcB     : out std_logic_vector(1 downto 0); 
         PCSrc       : out std_logic_vector(1 downto 0);
         BNE         : out std_logic;
-		state_out   : out std_logic_vector(4 downto 0)
+		  AluOutWrite : out std_logic;
+		  state_out   : out std_logic_vector(4 downto 0)
     );
   end component;
 	
@@ -123,6 +126,7 @@ package datapath_pkg is
 		port (
 			clk : in std_logic;
 			reset : in std_logic;
+			en: in std_logic;	
 			mem_data : in std_logic_vector(15 downto 0);
 			mdr_out : out std_logic_vector(15 downto 0)
 	);

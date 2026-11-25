@@ -5,6 +5,7 @@ entity control_unit is
   port (
         clk         : in std_logic;
         reset       : in std_logic;
+		  step_en	  : in std_logic;
         opcode      : in std_logic_vector(3 downto 0);
 
         PCWriteCond : out std_logic;
@@ -21,6 +22,7 @@ entity control_unit is
         AluSrcB     : out std_logic_vector(1 downto 0); 
         PCSrc       : out std_logic_vector(1 downto 0);
         BNE         : out std_logic;
+		  AluOutWrite : out std_logic;
 		  
 		  state_out : out std_logic_vector(4 downto 0)
   );
@@ -63,7 +65,9 @@ begin
     if reset = '1' then 
       current_state <= S_IF;
     elsif rising_edge(clk) then
-      current_state <= next_state;
+      if step_en = '1' then 
+		  current_state <= next_state;
+		end if;
     end if;
   end process;
 
@@ -84,6 +88,7 @@ begin
     AluSrcB <= "00";
     PCSrc <= "00";
     BNE <= '0';
+	 AluOutWrite <= '0';
     next_state <= S_IF;
 
     case current_state is
@@ -105,7 +110,7 @@ begin
 			AluOp   <= "00";
 
 			if opcode = OP_BEQ or opcode = OP_BNE then
-				AluSrcB <= "10";  -- Seleciona imediato estendido
+				AluOutWrite <= '1';
 			end if;
 	 
         case opcode is
@@ -137,6 +142,7 @@ begin
         AluSrcA <= '1';
         AluOp <= "10";
         next_state <= S_WB_R;
+		  AluOutWrite <= '1';
 		  
       when S_EX_ADDI =>
 		  state_out  <= "00100"; -- LEDG(2): Execução
@@ -144,6 +150,7 @@ begin
         AluSrcA <= '1';
         AluSrcB <= "10";
         next_state <= S_WB_R;
+		  AluOutWrite <= '1';
 
       when S_WB_R =>
         RegWrite <= '1';
@@ -156,6 +163,7 @@ begin
         AluOp <=  "00";
         AluSrcA <= '1';
         AluSrcB <= "10";
+		  AluOutWrite <= '1';
         if opcode = OP_LD then
           next_state <= S_MEM_RD;
 

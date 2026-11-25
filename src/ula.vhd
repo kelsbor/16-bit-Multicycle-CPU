@@ -15,6 +15,7 @@ entity ula is
 			-- Sinais de controle
 			clk		: in std_logic;
 			rst		: in std_logic;
+			alu_out_en: in std_logic;
 			AluSrcA	: in std_logic;
 			AluSrcB	: in std_logic_vector(1 downto 0);
 			
@@ -158,8 +159,9 @@ architecture logic of ula is
 			if rst = '1' then
 				AluOut <= (others => '0');
 			elsif rising_edge(clk) then
-				AluOut <= result;
+				if alu_out_en = '1' then 
+					AluOut <= result;
+				end if;
 			end if;
 		end process;
-		
 	end logic;

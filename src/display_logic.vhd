@@ -20,7 +20,9 @@ entity display_logic is
 end display_logic;
 
 architecture behavior of display_logic is
-    function decode_7seg(hex_digit: std_logic_vector(3 downto 0)) return std_logic_vector is
+    subtype seg7_t is std_logic_vector(6 downto 0);
+
+    function decode_7seg(hex_digit: std_logic_vector(3 downto 0)) return seg7_t is
     begin
         case hex_digit is
             when "0000" => return "1000000"; -- 0

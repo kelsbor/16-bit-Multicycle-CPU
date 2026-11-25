@@ -85,6 +85,7 @@
       Carlos Eduardo A. Nascimento - 24787111 \
       Daniel Wu - 24021993 \
       Guilherme Dias Cavalheri - 24013423 \
+      Kelvin Huss Borges - 24795486
       // TODO: adicionar 4º integrante com RA, se aplicável
     ]
   ])
@@ -252,40 +253,19 @@ No ciclo de busca (`S_IF`), o `PC` passa por `IorD` para ler a instrução na me
 // ==================== 4. TESTES (PESSOAL) ====================
 = Descrição dos Testes Utilizados
 
-#pendente("Simulação, .mif e validação na DE2-115")[
-  - *Simulação (testbench):* casos testados para Tipo R, `ADDI` (positivos/negativos), `LD`/`ST`, `BEQ`/`BNE` (tomado e não tomado) e `JMP`.
-  - *Arquivo `.mif`:* programa de teste carregado na memória (Assembly comentado / hex) e resultado esperado.
-  - *Placa FPGA (DE2-115):* clock manual por botão com debouncer, `PC` em `HEX0`–`HEX3`, `SW17` alternando `HEX4`–`HEX7` entre `RDM` e saída da ULA, e estado da UC nos LEDs verdes (`LEDG`).
-]
+#pendente("Simulação, .mif e validação na DE2-115")[]
 
 // ==================== 5. RESULTADOS (PESSOAL) ====================
 = Resultados e Discussão
 
-#pendente("Resultados obtidos e análise")[
-  - Formas de onda da simulação e conferência dos resultados por ciclo.
-  - Comportamento observado na DE2-115 (instruções validadas, fotos dos displays/LEDs e resumo da compilação no Quartus).
-  - Comparação entre o esperado e o obtido na prática.
-]
+#pendente("Resultados obtidos e análise")[]
 
 // ==================== 6. DIFICULDADES (PESSOAL) ====================
 = Dificuldades Encontradas
 
-#pendente("Problemas e soluções durante o projeto")[
-  - Documentar as dificuldades reais encontradas pelo grupo (adaptação de 32 para 16 bits, integração dos módulos VHDL, memória `.mif` no Quartus, debouncer e depuração da FSM).
-]
+#pendente("Problemas e soluções durante o projeto")[]
 
 // ==================== 7. USO DE IA (PESSOAL) ====================
 = Uso de IA
 
-#pendente("Partes desenvolvidas com IA e motivo")[
-  Registrar quais partes usaram IA, por quê e como foram revisadas pelo grupo:
-
-  #table(
-    columns: (1.2fr, 1.3fr, 1.5fr),
-    align: (left, left, left),
-    fill: (_, y) => if y == 0 { rgb("#e8eaf6") },
-    table.header[*Parte do projeto*][*Uso de IA e motivo*][*Revisão pelo grupo*],
-    [_Ex.: Estruturação do relatório_], [_A preencher_], [_A preencher_],
-    [_Ex.: Revisão de VHDL / testes_], [_A preencher_], [_A preencher_],
-  )
-]
+#pendente("Partes desenvolvidas com IA e motivo")[]
